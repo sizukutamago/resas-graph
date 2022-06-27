@@ -1,10 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { environment } from '../../environments/environment';
-
-interface Prefecture {
-  prefCode: number;
-  prefName: string;
-}
+import { Prefecture } from '../services/prefecture/prefecture';
+import { PrefectureService } from '../services/prefecture/prefecture.service';
 
 @Component({
   selector: 'app-prefectures',
@@ -14,15 +10,16 @@ interface Prefecture {
 export class PrefecturesComponent implements OnInit {
   public prefectures: Prefecture[] = [];
 
-  async ngOnInit() {
-    const response = await fetch(
-      'https://opendata.resas-portal.go.jp/api/v1/prefectures',
-      {
-        headers: { 'X-API-KEY': environment.API_KEY },
-      }
-    );
+  constructor(private prefectureService: PrefectureService) {}
 
-    const responseData = await response.json();
-    this.prefectures = responseData.result;
+  ngOnInit(): void {
+    this.getPrefectures();
+  }
+
+  getPrefectures() {
+    this.prefectureService.getPrefectures().subscribe((prefectures) => {
+      // todo: length 0 の場合エラー表示
+      this.prefectures = prefectures.result;
+    });
   }
 }
