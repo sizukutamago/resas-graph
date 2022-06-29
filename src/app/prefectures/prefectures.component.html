@@ -1,7 +1,7 @@
 <div id="select_prefectures">
   <form>
     <div *ngFor="let prefecture of prefectures" class="m-2 inline-block">
-      <input type="checkbox" value="{{prefecture.prefCode}}" id="{{prefecture.prefCode}}" class="mr-1" (click)="onClick(prefecture.prefCode)" /> <label for="{{prefecture.prefCode}}">{{prefecture.prefName}}</label>
+      <input type="checkbox" value="{{prefecture.prefCode}}" id="{{prefecture.prefCode}}" class="mr-1" (change)="onClick(prefecture.prefCode, $any($event.target)?.checked)" /> <label for="{{prefecture.prefCode}}">{{prefecture.prefName}}</label>
     </div>
   </form>
 </div>

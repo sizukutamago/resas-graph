@@ -23,7 +23,7 @@ export class PrefecturesComponent implements OnInit {
     });
   }
 
-  onClick(prefCode: number) {
-    console.log(prefCode);
+  onClick(prefCode: number, checked: boolean) {
+    console.log({ prefCode, checked });
   }
 }
