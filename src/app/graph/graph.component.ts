@@ -7,6 +7,8 @@ import * as Highcharts from 'highcharts';
   styleUrls: ['./graph.component.css'],
 })
 export class GraphComponent implements OnInit {
+  private chart: Highcharts.Chart | undefined;
+
   private chartOptions: any = {
     chart: {
       type: 'line',
@@ -24,16 +26,17 @@ export class GraphComponent implements OnInit {
       title: {
         text: '人口数',
       },
-      categories: [10000, 20000, 30000, 40000, 50000, 60000, 70000, 80000],
     },
     series: [
       {
-        name: '人口推移',
+        name: '東京',
         type: 'line',
-        data: [
-          [0, 4],
-          [4, 0],
-        ],
+        data: [60000, 30000, 30000, 10000],
+      },
+      {
+        name: '大阪',
+        type: 'line',
+        data: [10000, 20000, 30000, 60000],
       },
     ],
   };
@@ -41,6 +44,14 @@ export class GraphComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    Highcharts.chart('graph', this.chartOptions);
+    this.chart = Highcharts.chart('graph', this.chartOptions);
+
+    setTimeout(() => {
+      this.chart?.addSeries({
+        name: '奈良',
+        type: 'line',
+        data: [20000, 20000, 50000, 80000],
+      });
+    }, 1000);
   }
 }
