@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Prefecture } from '../services/prefecture/prefecture';
-import { PrefectureService } from '../services/prefecture/prefecture.service';
+import { Prefecture } from '../services/resas/prefecture';
+import { ResasService } from '../services/resas/resas.service';
 
 @Component({
   selector: 'app-prefectures',
@@ -10,16 +10,20 @@ import { PrefectureService } from '../services/prefecture/prefecture.service';
 export class PrefecturesComponent implements OnInit {
   public prefectures: Prefecture[] = [];
 
-  constructor(private prefectureService: PrefectureService) {}
+  constructor(private resasService: ResasService) {}
 
   ngOnInit(): void {
     this.getPrefectures();
   }
 
   getPrefectures() {
-    this.prefectureService.getPrefectures().subscribe((prefectures) => {
+    this.resasService.getPrefectures().subscribe((prefectures) => {
       // todo: length 0 の場合エラー表示
       this.prefectures = prefectures.result;
     });
+  }
+
+  onClick(prefCode: number) {
+    console.log(prefCode);
   }
 }

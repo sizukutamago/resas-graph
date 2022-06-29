@@ -12,7 +12,7 @@ const httpOptions = {
 @Injectable({
   providedIn: 'root',
 })
-export class PrefectureService {
+export class ResasService {
   constructor(private http: HttpClient) {}
 
   getPrefectures(): Observable<{ result: Prefecture[] }> {
