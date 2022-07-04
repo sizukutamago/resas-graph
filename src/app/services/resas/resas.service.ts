@@ -23,4 +23,23 @@ export class ResasService {
       })
     );
   }
+
+  getPopulation(prefCode: number): Observable<{
+    result: {
+      data: [];
+    };
+  }> {
+    // @ts-ignore
+    return this.http
+      .get<{ result: { data: [] } }>(
+        `https://opendata.resas-portal.go.jp/api/v1/population/composition/perYear?cityCode=-&prefCode=${prefCode}`,
+        httpOptions
+      )
+      .pipe(
+        catchError((e) => {
+          console.error({ e });
+          return of({ result: { data: [] } });
+        })
+      );
+  }
 }

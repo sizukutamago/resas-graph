@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import * as Highcharts from 'highcharts';
+import { ResasService } from '../services/resas/resas.service';
+import { MessageService } from '../services/message.service';
 
 @Component({
   selector: 'app-graph',
@@ -7,11 +9,14 @@ import * as Highcharts from 'highcharts';
   styleUrls: ['./graph.component.css'],
 })
 export class GraphComponent implements OnInit {
+  private filterYears = [1980, 1990, 2000, 2010, 2020];
+
   private chart: Highcharts.Chart | undefined;
 
   private chartOptions: any = {
     chart: {
       type: 'line',
+      title: '',
     },
     credits: {
       enabled: false,
@@ -20,38 +25,67 @@ export class GraphComponent implements OnInit {
       title: {
         text: '年度',
       },
-      categories: [1980, 1990, 2000, 2010, 2020],
+      categories: this.filterYears,
     },
     yAxis: {
       title: {
         text: '人口数',
       },
     },
-    series: [
-      {
-        name: '東京',
-        type: 'line',
-        data: [60000, 30000, 30000, 10000],
-      },
-      {
-        name: '大阪',
-        type: 'line',
-        data: [10000, 20000, 30000, 60000],
-      },
-    ],
   };
 
-  constructor() {}
+  private prefectures: { prefCode: number; checked: boolean; data: [] }[] = [];
+
+  constructor(
+    private resasService: ResasService,
+    private messageService: MessageService
+  ) {}
 
   ngOnInit(): void {
     this.chart = Highcharts.chart('graph', this.chartOptions);
 
-    setTimeout(() => {
-      this.chart?.addSeries({
-        name: '奈良',
-        type: 'line',
-        data: [20000, 20000, 50000, 80000],
+    this.messageService.messageSubject$.subscribe(
+      (result: { prefCode: number; checked: boolean }) => {
+        this.draw(result.prefCode, result.checked);
+      }
+    );
+  }
+
+  draw(prefCode: number, checked: boolean) {
+    const includedPrefecture = this.prefectures.find(
+      (prefecture) => prefecture.prefCode === prefCode
+    );
+
+    if (includedPrefecture) {
+      let data: any[] = [];
+      //@ts-ignore
+      includedPrefecture.data[0]?.data?.forEach((result) => {
+        const a = this.filterYears.includes(result.year);
+        if (a) {
+          data.push(result.value);
+        }
       });
-    }, 1000);
+
+      this.chart?.addSeries({
+        name: '',
+        type: 'line',
+        data,
+      });
+    } else {
+      this.getPrefecturePopulation(prefCode);
+    }
+  }
+
+  getPrefecturePopulation(prefCode: number) {
+    this.resasService.getPopulation(prefCode).subscribe((response) => {
+      console.log(response);
+      this.prefectures.push({
+        prefCode,
+        checked: true,
+        data: response.result.data,
+      });
+      // @ts-ignore
+      this.draw(prefCode, true);
+    });
   }
 }

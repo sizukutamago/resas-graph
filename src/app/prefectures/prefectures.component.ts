@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Prefecture } from '../services/resas/prefecture';
 import { ResasService } from '../services/resas/resas.service';
+import { MessageService } from '../services/message.service';
 
 @Component({
   selector: 'app-prefectures',
@@ -10,7 +11,10 @@ import { ResasService } from '../services/resas/resas.service';
 export class PrefecturesComponent implements OnInit {
   public prefectures: Prefecture[] = [];
 
-  constructor(private resasService: ResasService) {}
+  constructor(
+    private resasService: ResasService,
+    private messageService: MessageService
+  ) {}
 
   ngOnInit(): void {
     this.getPrefectures();
@@ -24,6 +28,6 @@ export class PrefecturesComponent implements OnInit {
   }
 
   onClick(prefCode: number, checked: boolean) {
-    console.log({ prefCode, checked });
+    this.messageService.messageSubject.next({ prefCode, checked });
   }
 }
